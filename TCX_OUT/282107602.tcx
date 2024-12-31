@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2" xmlns:ns5="http://www.garmin.com/xmlschemas/ActivityGoals/v1" xmlns:ns3="http://www.garmin.com/xmlschemas/ActivityExtension/v2" xmlns:ns2="http://www.garmin.com/xmlschemas/UserProfile/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns4="http://www.garmin.com/xmlschemas/ProfileExtension/v1" xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+	<Activities>
+		<Activity Sport="Running">
+			<Id>2017-11-20T20:07:23Z</Id>
+			<Creator xsi:type="Device_t">
+				<Name>Codoon</Name>
+				<ProductID>3441</ProductID>
+			</Creator>
+			<Lap StartTime="2017-11-20T20:07:23Z">
+				<TotalTimeSeconds>2236.0009765625</TotalTimeSeconds>
+				<DistanceMeters>4406.332524989732</DistanceMeters>
+				<Calories>277.2038065927011</Calories>
+				<Track>
+					<Trackpoint>
+						<Time>2017-11-20T12:07:24Z</Time>
+						<HeartRateBpm>
+							<Value>0</Value>
+						</HeartRateBpm>
+					</Trackpoint>
+				</Track>
+			</Lap>
+		</Activity>
+	</Activities>
+	<Author xsi:type="Application_t">
+		<Name>Connect Api</Name>
+		<LangID>en</LangID>
+		<PartNumber>006-D2449-00</PartNumber>
+	</Author>
+</TrainingCenterDatabase>

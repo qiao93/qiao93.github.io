@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2" xmlns:ns5="http://www.garmin.com/xmlschemas/ActivityGoals/v1" xmlns:ns3="http://www.garmin.com/xmlschemas/ActivityExtension/v2" xmlns:ns2="http://www.garmin.com/xmlschemas/UserProfile/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns4="http://www.garmin.com/xmlschemas/ProfileExtension/v1" xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+	<Activities>
+		<Activity Sport="Running">
+			<Id>2017-10-21T15:10:06Z</Id>
+			<Creator xsi:type="Device_t">
+				<Name>Codoon</Name>
+				<ProductID>3441</ProductID>
+			</Creator>
+			<Lap StartTime="2017-10-21T15:10:06Z">
+				<TotalTimeSeconds>22583.74609375</TotalTimeSeconds>
+				<DistanceMeters>27.26508006689086</DistanceMeters>
+				<Calories>552.3217042092126</Calories>
+				<Track>
+					<Trackpoint>
+						<Time>2017-10-21T20:31:17Z</Time>
+						<Position>
+							<LatitudeDegrees>39.96019253363624</LatitudeDegrees>
+							<LongitudeDegrees>116.50087169909271</LongitudeDegrees>
+						</Position>
+						<AltitudeMeters>50.42951</AltitudeMeters>
+					</Trackpoint>
+					<Trackpoint>
+						<Time>2017-10-21T20:31:49Z</Time>
+						<Position>
+							<LatitudeDegrees>39.959951236092316</LatitudeDegrees>
+							<LongitudeDegrees>116.50093085850463</LongitudeDegrees>
+						</Position>
+						<AltitudeMeters>50.10451</AltitudeMeters>
+					</Trackpoint>
+					<Trackpoint>
+						<Time>2017-10-21T21:26:30Z</Time>
+						<Position>
+							<LatitudeDegrees>39.959951236092316</LatitudeDegrees>
+							<LongitudeDegrees>116.50093085850463</LongitudeDegrees>
+						</Position>
+						<AltitudeMeters>50.10451</AltitudeMeters>
+					</Trackpoint>
+				</Track>
+			</Lap>
+		</Activity>
+	</Activities>
+	<Author xsi:type="Application_t">
+		<Name>Connect Api</Name>
+		<LangID>en</LangID>
+		<PartNumber>006-D2449-00</PartNumber>
+	</Author>
+</TrainingCenterDatabase>
