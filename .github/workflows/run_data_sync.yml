@@ -28,7 +28,7 @@ env:
   RUN_TYPE: coros # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon/oppo, Please change the 'pass' it to your own
   ATHLETE: Qiao
   TITLE: 跑下去天自然会亮
-  MIN_GRID_DISTANCE: 10 # change min distance here
+  MIN_GRID_DISTANCE: 5 # change min distance here
   TITLE_GRID: 努力的时刻有你陪伴 # also here
 
   # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
