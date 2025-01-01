@@ -29,7 +29,7 @@ env:
   ATHLETE: qiao
   TITLE: 跑下去天自然会亮
   MIN_GRID_DISTANCE: 10 # change min distance here
-  TITLE_GRID: 你努力的时刻有我陪伴 # also here
+  TITLE_GRID: 努力的时刻有你陪伴 # also here
 
   # IGNORE_BEFORE_SAVING: True # if you want to ignore some data before saving, set this to True
   IGNORE_START_END_RANGE: 10 # Unit meter
