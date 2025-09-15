@@ -394,8 +394,8 @@ class Track:
         )
         self.moving_dict["average_speed"] = (
             message["enhanced_avg_speed"]
-            if message["enhanced_avg_speed"]
-            else message["avg_speed"]
+            if "enhanced_avg_speed" in message and message["enhanced_avg_speed"]
+            else message.get("avg_speed")
         )
         for record in fit["record_mesgs"]:
             if "position_lat" in record and "position_long" in record:
