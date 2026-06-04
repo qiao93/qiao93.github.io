@@ -263,6 +263,49 @@ jobs:
         run: |
           python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary.svg --athlete "${{ env.ATHLETE }}"
 
+      # Per-run Markdown analysis (Phase 6+). Always runs after sync.
+      # Stages reports into public/analyses/ so the Vite build can serve them.
+      # Set ANALYZE_SKIP=1 to disable, or ANALYZE_LATEST=N to bound the run.
+      - name: Per-run analysis
+        if: env.ANALYZE_SKIP != '1' && (env.RUN_TYPE == 'coros' || env.RUN_TYPE == 'garmin' || env.RUN_TYPE == 'garmin_cn' || env.RUN_TYPE == 'only_fit')
+        env:
+          COROS_ACCOUNT: ${{ secrets.COROS_ACCOUNT }}
+          COROS_PASSWORD: ${{ secrets.COROS_PASSWORD }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          NARRATIVE_MODEL: ${{ vars.ANTHROPIC_MODEL || 'claude-haiku-4-5' }}
+        run: |
+          mkdir -p public/analyses
+          LATEST="${ANALYZE_LATEST:-5}"
+          if [ "$LATEST" = "0" ]; then
+            python -m run_page.analysis.cli --all --narrative || echo "::warning::analysis had failures"
+          else
+            python -m run_page.analysis.cli --latest "$LATEST" --narrative || echo "::warning::analysis had failures"
+          fi
+
+      - name: Commit analysis results
+        if: env.ANALYZE_SKIP != '1' && env.SAVE_DATA_IN_GITHUB_CACHE != 'true' && (env.RUN_TYPE == 'coros' || env.RUN_TYPE == 'garmin' || env.RUN_TYPE == 'garmin_cn' || env.RUN_TYPE == 'only_fit')
+        run: |
+          # Find uncommitted analysis files (run_page/analyses/ + public/analyses/)
+          analysis_files=$(git status --porcelain | \
+            grep -E '^.(M|A).*/(run_page/analyses/|public/analyses/)' | \
+            grep -E '\.(md|json|svg)$' || true)
+          if [ -n "$analysis_files" ]; then
+            echo "$analysis_files" | awk '{print $2}' | xargs git add
+            dates=$(echo "$analysis_files" | \
+              grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | \
+              sort -u | tr '\n' ' ' | sed 's/ $//')
+            count=$(echo "$analysis_files" | wc -l | tr -d ' ')
+            msg="analyze: add $count report(s) ($dates)"
+            git config --local user.email 'action@github.com'
+            git config --local user.name 'GitHub Action'
+            git commit -m "$msg"
+            git push
+            echo "Committed analysis: $msg"
+          else
+            echo "No analysis file changes to commit"
+          fi
+
       - name: Save data to parqent
         if: env.SAVE_TO_PARQENT == 'true'
         run: |
