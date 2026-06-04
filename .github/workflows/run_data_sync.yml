@@ -273,7 +273,7 @@ jobs:
           COROS_PASSWORD: ${{ secrets.COROS_PASSWORD }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
-          NARRATIVE_MODEL: ${{ vars.ANTHROPIC_MODEL || 'claude-haiku-4-5' }}
+          NARRATIVE_MODEL: ${{ vars.ANTHROPIC_MODEL || 'MiniMax-M3' }}
         run: |
           mkdir -p public/analyses
           LATEST="${ANALYZE_LATEST:-5}"
