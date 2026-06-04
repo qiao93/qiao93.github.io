@@ -6,9 +6,12 @@ import time
 
 import aiofiles
 import httpx
+from sqlalchemy import create_engine, text
 
 from config import JSON_FILE, SQL_FILE, FOLDER_DICT
 from utils import make_activities_file
+
+# `config.SQL_FILE` = "{repo_root}/run_page/data.db" (same formula id_map uses)
 
 COROS_URL_DICT = {
     "LOGIN_URL": "https://teamcnapi.coros.com/account/login",
@@ -30,6 +33,7 @@ class Coros:
     def __init__(self, account, password, is_only_running=False):
         self.account = account
         self.password = password
+        self.is_only_running = is_only_running
         self.headers = None
         self.req = None
 
@@ -53,29 +57,52 @@ class Coros:
         }
         data = {"account": self.account, "accountType": 2, "pwd": self.password}
         async with httpx.AsyncClient(timeout=TIME_OUT) as client:
-            response = await client.post(url, json=data, headers=headers)
-            resp_json = response.json()
-            access_token = resp_json.get("data", {}).get("accessToken")
+            try:
+                response = await client.post(url, json=data, headers=headers)
+            except httpx.HTTPError as exc:
+                raise RuntimeError(
+                    f"Coros login request failed: {exc}"
+                ) from exc
+
+            if response.status_code != 200:
+                raise RuntimeError(
+                    f"Coros login HTTP {response.status_code}: {response.text[:200]}"
+                )
+
+            try:
+                resp_json = response.json()
+            except ValueError as exc:
+                raise RuntimeError(
+                    f"Coros login returned non-JSON body: {response.text[:200]}"
+                ) from exc
+
+            access_token = (resp_json.get("data") or {}).get("accessToken")
             if not access_token:
-                raise Exception(
-                    "============Login failed! please check your account and password==========="
+                # Distinguish common failure modes so the user can act on it.
+                msg = (resp_json.get("message") or resp_json.get("msg") or "").lower()
+                if "captcha" in msg or resp_json.get("code") in (40001, 40002):
+                    raise RuntimeError(
+                        "Coros login requires captcha verification; "
+                        "try again from a web browser first to clear it."
+                    )
+                raise RuntimeError(
+                    f"Coros login failed (no access token): {resp_json}"
                 )
             self.headers = {
                 "accesstoken": access_token,
                 "cookie": f"CPL-coros-region=2; CPL-coros-token={access_token}",
             }
-            self.is_only_running = is_only_running
             self.req = httpx.AsyncClient(timeout=TIME_OUT, headers=self.headers)
         await client.aclose()
 
     async def init(self):
         await self.login()
 
-    async def fetch_activity_ids_types(self, only_run):
+    async def fetch_activity_ids_types(self):
         page_number = 1
         all_activities_ids_types = []
 
-        mode_list_str = "100,101,102,103" if only_run else ""
+        mode_list_str = "100,101,102,103" if self.is_only_running else ""
         while True:
             url = f"{COROS_URL_DICT.get('ACTIVITY_LIST')}?&modeList={mode_list_str}&pageNumber={page_number}&size=20"
             response = await self.req.get(url)
@@ -108,8 +135,10 @@ class Coros:
         file_url = None
         fname = ""
         file_path = ""
+        status_code = None
         try:
             response = await self.req.post(download_url)
+            status_code = response.status_code
             resp_json = response.json()
             file_url = resp_json.get("data", {}).get("fileUrl")
             if not file_url:
@@ -127,7 +156,7 @@ class Coros:
             return label_id, fname
         except httpx.HTTPStatusError as exc:
             print(
-                f"Failed to download {file_url} with status code {response.status_code}: {exc}"
+                f"Failed to download {file_url} with status code {status_code}: {exc}"
             )
         except Exception as exc:
             print(f"Error occurred while downloading {file_url}: {exc}")
@@ -142,12 +171,12 @@ def get_downloaded_ids(folder):
     return [i.split(".")[0] for i in os.listdir(folder) if not i.startswith(".")]
 
 
-async def download_and_generate(account, password, only_run, file_type):
+async def download_and_generate(account, password, is_only_running, file_type):
     folder = FOLDER_DICT[file_type]
     downloaded_ids = get_downloaded_ids(folder)
-    coros = Coros(account, password)
+    coros = Coros(account, password, is_only_running)
     await coros.init()
-    activity_infos = await coros.fetch_activity_ids_types(only_run=only_run)
+    activity_infos = await coros.fetch_activity_ids_types()
     activity_ids = [i[0] for i in activity_infos]
     activity_types = [i[1] for i in activity_infos]
     activity_id_type_dict = dict(zip(activity_ids, activity_types))
@@ -157,7 +186,7 @@ async def download_and_generate(account, password, only_run, file_type):
     print("to_generate_activity_ids: ", len(to_generate_coros_ids))
 
     start_time = time.time()
-    await gather_with_concurrency(
+    results = await gather_with_concurrency(
         10,
         [
             coros.download_activity(
@@ -166,9 +195,43 @@ async def download_and_generate(account, password, only_run, file_type):
             for label_id in to_generate_coros_ids
         ],
     )
+    failed = [r for r in results if isinstance(r, BaseException)]
+    if failed:
+        print(
+            f"  {len(failed)} of {len(to_generate_coros_ids)} downloads raised; "
+            f"they will be retried on the next run."
+        )
     print(f"Download finished. Elapsed {time.time()-start_time} seconds")
     await coros.req.aclose()
     make_activities_file(SQL_FILE, folder, JSON_FILE, file_type)
+
+    # Persist label_id → fit_filename → sport_type mapping so the analysis
+    # module can go from a DB row to the right FIT and Coros API call.
+    # download_activity() returns (label_id, fname) on success, None on failure.
+    #
+    # Direct SQL (no import of run_page.*): uses the already-imported SQL_FILE.
+    e = create_engine(f"sqlite:///{SQL_FILE}")
+    recorded = 0
+    with e.begin() as conn:
+        for r in results:
+            if r is None or isinstance(r, BaseException):
+                continue
+            label_id, fname = r
+            conn.execute(
+                text("""
+                    INSERT OR IGNORE INTO coros_id_map
+                        (label_id, run_id, fit_filename, sport_type)
+                    VALUES (:label_id, NULL, :fit_filename, :sport_type)
+                """),
+                {
+                    "label_id": label_id,
+                    "fit_filename": fname,
+                    "sport_type": activity_id_type_dict.get(label_id),
+                },
+            )
+            recorded += 1
+    if recorded:
+        print(f"Recorded {recorded} label_id → fit_filename mappings in coros_id_map")
 
 
 async def gather_with_concurrency(n, tasks):
@@ -178,7 +241,12 @@ async def gather_with_concurrency(n, tasks):
         async with semaphore:
             return await task
 
-    return await asyncio.gather(*(sem_task(task) for task in tasks))
+    # return_exceptions=True: a single failure (e.g. one 5xx download) must not
+    # cancel the rest of the batch. Caller filters exceptions and decides what
+    # to do with them.
+    return await asyncio.gather(
+        *(sem_task(task) for task in tasks), return_exceptions=True
+    )
 
 
 if __name__ == "__main__":

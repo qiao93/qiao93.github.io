@@ -1,0 +1,30 @@
+owner: 9996632@qq.com
+hrv_baseline_ms: 69
+hrv_tolerance_ms: 5
+marathon_goal: '2:40:55'
+marathon_pace_range:
+- '4:39'
+- '4:49'
+biomechanics:
+  vertical_oscillation_mm:
+  - 60
+  - 70
+  vertical_ratio_pct:
+  - 5.5
+  - 8.0
+  gct_fast_ms:
+  - 190
+  - 210
+  gct_slow_ms:
+  - 210
+  - 230
+  cadence_fast_spm:
+  - 172
+  - 168
+  cadence_slow_spm:
+  - 168
+  - 160
+load:
+  overload: 1.3
+  optimized: 1.0
+  maintaining: 0.8

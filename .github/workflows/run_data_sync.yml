@@ -72,7 +72,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install -e .
 
       - name: Install Cloudflare WARP
         if: env.USE_CLOUDFLARE_WARP == 'true'
@@ -275,6 +274,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
           NARRATIVE_MODEL: ${{ vars.ANTHROPIC_MODEL || 'MiniMax-M3' }}
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           mkdir -p public/analyses
           LATEST="${ANALYZE_LATEST:-5}"

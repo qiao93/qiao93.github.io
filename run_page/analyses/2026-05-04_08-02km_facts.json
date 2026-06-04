@@ -1,0 +1,197 @@
+{
+  "label_id": "1777893453000",
+  "account": "9996632@qq.com",
+  "date": "2026-05-04 11:17:33",
+  "type": "Run",
+  "distance_km": 8.01623,
+  "duration_s": 2935.46,
+  "avg_pace_s": 366.1895928634782,
+  "location": null,
+  "pace_stats": {
+    "mean_s_per_km": 372.2759048173224,
+    "range_s_per_km": 77.41031643794969,
+    "trend": "negative_split",
+    "consistency": "variable"
+  },
+  "hr_stats": {
+    "mean_bpm": 155,
+    "max_bpm": 167,
+    "drift_bpm": 0.0,
+    "drift_grade": "excellent"
+  },
+  "bio": {
+    "cadence_spm_first": 188,
+    "cadence_spm_last": 180,
+    "vertical_osc_first_mm": 76.0,
+    "vertical_osc_last_mm": 79.0,
+    "gct_first_ms": null,
+    "gct_last_ms": null,
+    "fatigue_grade": "notable"
+  },
+  "body_state": {
+    "hrv_today_ms": 0,
+    "rhr_today_bpm": 0,
+    "hrv_baseline_ms": 69,
+    "load_ratio": 1.0
+  },
+  "pace_vs_goal": {
+    "target_s_per_km": 284,
+    "actual_s_per_km": 372.2759048173224,
+    "delta_s_per_km": 88.27590481732238,
+    "matches": false
+  },
+  "recent_sessions": [
+    {
+      "date": "2026-05-04",
+      "distance_km": 8.01623,
+      "duration_s": 0.0,
+      "avg_pace_s": 0.0,
+      "is_current": true
+    },
+    {
+      "date": "2026-05-03",
+      "distance_km": 6.660399999999999,
+      "duration_s": 0.0,
+      "avg_pace_s": 0.0,
+      "is_current": false
+    },
+    {
+      "date": "2026-04-19",
+      "distance_km": 10.0064,
+      "duration_s": 0.0,
+      "avg_pace_s": 0.0,
+      "is_current": false
+    },
+    {
+      "date": "2026-04-12",
+      "distance_km": 21.26743,
+      "duration_s": 0.0,
+      "avg_pace_s": 0.0,
+      "is_current": false
+    },
+    {
+      "date": "2026-04-09",
+      "distance_km": 6.08743,
+      "duration_s": 0.0,
+      "avg_pace_s": 0.0,
+      "is_current": false
+    },
+    {
+      "date": "2026-04-03",
+      "distance_km": 5.16368,
+      "duration_s": 0.0,
+      "avg_pace_s": 0.0,
+      "is_current": false
+    }
+  ],
+  "laps": [
+    {
+      "index": 8,
+      "distance_m": 16.23,
+      "elapsed_s": 6.85,
+      "avg_heart_rate": 157,
+      "max_heart_rate": 157,
+      "avg_speed_mps": 2.369,
+      "avg_running_cadence_spm": 188,
+      "avg_vertical_oscillation_mm": 76.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 9.1
+    },
+    {
+      "index": 0,
+      "distance_m": 1000.0,
+      "elapsed_s": 387.64,
+      "avg_heart_rate": 139,
+      "max_heart_rate": 154,
+      "avg_speed_mps": 2.58,
+      "avg_running_cadence_spm": 190,
+      "avg_vertical_oscillation_mm": 73.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.8
+    },
+    {
+      "index": 1,
+      "distance_m": 1000.0,
+      "elapsed_s": 355.28,
+      "avg_heart_rate": 153,
+      "max_heart_rate": 159,
+      "avg_speed_mps": 2.815,
+      "avg_running_cadence_spm": 192,
+      "avg_vertical_oscillation_mm": 72.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.2
+    },
+    {
+      "index": 2,
+      "distance_m": 1000.0,
+      "elapsed_s": 360.4,
+      "avg_heart_rate": 152,
+      "max_heart_rate": 158,
+      "avg_speed_mps": 2.775,
+      "avg_running_cadence_spm": 190,
+      "avg_vertical_oscillation_mm": 74.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.3
+    },
+    {
+      "index": 3,
+      "distance_m": 1000.0,
+      "elapsed_s": 364.56,
+      "avg_heart_rate": 153,
+      "max_heart_rate": 158,
+      "avg_speed_mps": 2.743,
+      "avg_running_cadence_spm": 190,
+      "avg_vertical_oscillation_mm": 74.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.6
+    },
+    {
+      "index": 4,
+      "distance_m": 1000.0,
+      "elapsed_s": 350.79,
+      "avg_heart_rate": 160,
+      "max_heart_rate": 164,
+      "avg_speed_mps": 2.851,
+      "avg_running_cadence_spm": 190,
+      "avg_vertical_oscillation_mm": 76.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.6
+    },
+    {
+      "index": 5,
+      "distance_m": 1000.0,
+      "elapsed_s": 344.71,
+      "avg_heart_rate": 161,
+      "max_heart_rate": 167,
+      "avg_speed_mps": 2.901,
+      "avg_running_cadence_spm": 188,
+      "avg_vertical_oscillation_mm": 77.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.4
+    },
+    {
+      "index": 6,
+      "distance_m": 1000.0,
+      "elapsed_s": 363.41,
+      "avg_heart_rate": 162,
+      "max_heart_rate": 166,
+      "avg_speed_mps": 2.752,
+      "avg_running_cadence_spm": 186,
+      "avg_vertical_oscillation_mm": 78.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.7
+    },
+    {
+      "index": 7,
+      "distance_m": 1000.0,
+      "elapsed_s": 401.82,
+      "avg_heart_rate": 158,
+      "max_heart_rate": 166,
+      "avg_speed_mps": 2.489,
+      "avg_running_cadence_spm": 180,
+      "avg_vertical_oscillation_mm": 79.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 9.3
+    }
+  ]
+}
