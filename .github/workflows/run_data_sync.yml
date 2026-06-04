@@ -72,6 +72,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install -e .
 
       - name: Install Cloudflare WARP
         if: env.USE_CLOUDFLARE_WARP == 'true'
