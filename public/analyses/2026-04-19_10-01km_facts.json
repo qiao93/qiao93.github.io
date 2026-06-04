@@ -1,0 +1,101 @@
+{
+  "label_id": "1776592450000",
+  "account": "9996632@qq.com",
+  "date": "2026-04-19 17:54:10",
+  "type": "Run",
+  "distance_km": 10.0064,
+  "duration_s": 3593.73,
+  "avg_pace_s": 359.1431483850336,
+  "location": null,
+  "pace_stats": {
+    "mean_s_per_km": 359.3244699964068,
+    "range_s_per_km": 0.0,
+    "trend": "even",
+    "consistency": "consistent"
+  },
+  "hr_stats": {
+    "mean_bpm": 155,
+    "max_bpm": 177,
+    "drift_bpm": 0.0,
+    "drift_grade": "excellent"
+  },
+  "bio": {
+    "cadence_spm_first": 186,
+    "cadence_spm_last": 186,
+    "vertical_osc_first_mm": 73.0,
+    "vertical_osc_last_mm": 73.0,
+    "gct_first_ms": null,
+    "gct_last_ms": null,
+    "fatigue_grade": "none"
+  },
+  "body_state": {
+    "hrv_today_ms": 0,
+    "rhr_today_bpm": 52,
+    "hrv_baseline_ms": 69,
+    "load_ratio": 0.2697495183044316
+  },
+  "pace_vs_goal": {
+    "target_s_per_km": 284,
+    "actual_s_per_km": 359.3244699964068,
+    "delta_s_per_km": 75.32446999640678,
+    "matches": false
+  },
+  "recent_sessions": [
+    {
+      "date": "2026-04-19",
+      "distance_km": 10.0064,
+      "duration_s": 3593.73,
+      "avg_pace_s": 359.1431483850336,
+      "is_current": true
+    },
+    {
+      "date": "2026-04-12",
+      "distance_km": 21.26743,
+      "duration_s": 6784.04,
+      "avg_pace_s": 318.98729653747534,
+      "is_current": false
+    },
+    {
+      "date": "2026-04-09",
+      "distance_km": 6.08743,
+      "duration_s": 2744.52,
+      "avg_pace_s": 450.8503588542291,
+      "is_current": false
+    },
+    {
+      "date": "2026-04-03",
+      "distance_km": 5.16368,
+      "duration_s": 1865.04,
+      "avg_pace_s": 361.1842716822111,
+      "is_current": false
+    },
+    {
+      "date": "2026-03-22",
+      "distance_km": 42.74991000000001,
+      "duration_s": 13628.56,
+      "avg_pace_s": 318.797396298612,
+      "is_current": false
+    },
+    {
+      "date": "2026-03-19",
+      "distance_km": 7.29458,
+      "duration_s": 2502.06,
+      "avg_pace_s": 343.00261289889204,
+      "is_current": false
+    }
+  ],
+  "laps": [
+    {
+      "index": 0,
+      "distance_m": 10000.0,
+      "elapsed_s": 3593.73,
+      "avg_heart_rate": 155,
+      "max_heart_rate": 177,
+      "avg_speed_mps": 2.783,
+      "avg_running_cadence_spm": 186,
+      "avg_vertical_oscillation_mm": 73.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.1
+    }
+  ]
+}
