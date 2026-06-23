@@ -30,7 +30,7 @@
   },
   "body_state": {
     "hrv_today_ms": 0,
-    "rhr_today_bpm": 52,
+    "rhr_today_bpm": 50,
     "hrv_baseline_ms": 69,
     "load_ratio": 1.0
   },
