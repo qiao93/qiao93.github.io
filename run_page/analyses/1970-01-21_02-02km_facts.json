@@ -1,0 +1,58 @@
+{
+  "label_id": "478525484548784630",
+  "account": "9996632@qq.com",
+  "date": "1970-01-21 15:10:45",
+  "type": "Run",
+  "distance_km": 2.02486,
+  "duration_s": 0.0,
+  "avg_pace_s": 0.0,
+  "location": null,
+  "pace_stats": {
+    "mean_s_per_km": 276.62517289073304,
+    "range_s_per_km": 0.0,
+    "trend": "even",
+    "consistency": "consistent"
+  },
+  "hr_stats": {
+    "mean_bpm": 165,
+    "max_bpm": 176,
+    "drift_bpm": 0.0,
+    "drift_grade": "excellent"
+  },
+  "bio": {
+    "cadence_spm_first": 196,
+    "cadence_spm_last": 196,
+    "vertical_osc_first_mm": 74.0,
+    "vertical_osc_last_mm": 74.0,
+    "gct_first_ms": null,
+    "gct_last_ms": null,
+    "fatigue_grade": "none"
+  },
+  "body_state": {
+    "hrv_today_ms": 0,
+    "rhr_today_bpm": 50,
+    "hrv_baseline_ms": 69,
+    "load_ratio": 1.0
+  },
+  "pace_vs_goal": {
+    "target_s_per_km": 284,
+    "actual_s_per_km": 276.62517289073304,
+    "delta_s_per_km": -7.37482710926696,
+    "matches": true
+  },
+  "recent_sessions": [],
+  "laps": [
+    {
+      "index": 0,
+      "distance_m": 2000.0,
+      "elapsed_s": 553.17,
+      "avg_heart_rate": 165,
+      "max_heart_rate": 176,
+      "avg_speed_mps": 3.615,
+      "avg_running_cadence_spm": 196,
+      "avg_vertical_oscillation_mm": 74.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 6.7
+    }
+  ]
+}
