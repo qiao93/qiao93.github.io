@@ -1,29 +1,29 @@
 {
-  "label_id": "479001953727185301",
+  "label_id": "479172324340301927",
   "account": "9996632@qq.com",
-  "date": "1970-01-21 15:40:18",
+  "date": "1970-01-21 15:50:55",
   "type": "Run",
-  "distance_km": 1.16061,
+  "distance_km": 1.15575,
   "duration_s": 0.0,
   "avg_pace_s": 0.0,
   "location": null,
   "pace_stats": {
-    "mean_s_per_km": 347.8362445245871,
-    "range_s_per_km": 16.3246629622177,
-    "trend": "positive_split",
+    "mean_s_per_km": 359.4241463272859,
+    "range_s_per_km": 7.10452041257895,
+    "trend": "negative_split",
     "consistency": "consistent"
   },
   "hr_stats": {
-    "mean_bpm": 149.5,
-    "max_bpm": 158,
+    "mean_bpm": 157,
+    "max_bpm": 166,
     "drift_bpm": 0.0,
     "drift_grade": "excellent"
   },
   "bio": {
-    "cadence_spm_first": 196,
-    "cadence_spm_last": 194,
-    "vertical_osc_first_mm": 71.0,
-    "vertical_osc_last_mm": 69.0,
+    "cadence_spm_first": 194,
+    "cadence_spm_last": 192,
+    "vertical_osc_first_mm": 72.0,
+    "vertical_osc_last_mm": 72.0,
     "gct_first_ms": null,
     "gct_last_ms": null,
     "fatigue_grade": "none"
@@ -36,35 +36,35 @@
   },
   "pace_vs_goal": {
     "target_s_per_km": 284,
-    "actual_s_per_km": 347.8362445245871,
-    "delta_s_per_km": 63.83624452458707,
+    "actual_s_per_km": 359.4241463272859,
+    "delta_s_per_km": 75.42414632728588,
     "matches": false
   },
   "recent_sessions": [],
   "laps": [
     {
       "index": 1,
-      "distance_m": 160.61,
-      "elapsed_s": 54.56,
-      "avg_heart_rate": 156,
-      "max_heart_rate": 158,
-      "avg_speed_mps": 2.944,
-      "avg_running_cadence_spm": 196,
-      "avg_vertical_oscillation_mm": 71.0,
+      "distance_m": 155.75,
+      "elapsed_s": 56.54,
+      "avg_heart_rate": 163,
+      "max_heart_rate": 166,
+      "avg_speed_mps": 2.755,
+      "avg_running_cadence_spm": 194,
+      "avg_vertical_oscillation_mm": 72.0,
       "avg_ground_contact_time_ms": null,
       "avg_vertical_ratio_pct": 7.8
     },
     {
       "index": 0,
       "distance_m": 1000.0,
-      "elapsed_s": 355.95,
-      "avg_heart_rate": 143,
-      "max_heart_rate": 155,
-      "avg_speed_mps": 2.809,
-      "avg_running_cadence_spm": 194,
-      "avg_vertical_oscillation_mm": 69.0,
+      "elapsed_s": 355.84,
+      "avg_heart_rate": 151,
+      "max_heart_rate": 164,
+      "avg_speed_mps": 2.81,
+      "avg_running_cadence_spm": 192,
+      "avg_vertical_oscillation_mm": 72.0,
       "avg_ground_contact_time_ms": null,
-      "avg_vertical_ratio_pct": 8.1
+      "avg_vertical_ratio_pct": 8.3
     }
   ]
 }
