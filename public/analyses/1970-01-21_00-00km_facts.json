@@ -1,7 +1,7 @@
 {
-  "label_id": "479849158572802551",
+  "label_id": "480012439002317003",
   "account": "9996632@qq.com",
-  "date": "1970-01-21 16:32:52",
+  "date": "1970-01-21 16:43:03",
   "type": "sport-402",
   "distance_km": 0.0,
   "duration_s": 0.0,
@@ -14,8 +14,8 @@
     "consistency": "variable"
   },
   "hr_stats": {
-    "mean_bpm": 120,
-    "max_bpm": 146,
+    "mean_bpm": 108,
+    "max_bpm": 125,
     "drift_bpm": 0.0,
     "drift_grade": "excellent"
   },
@@ -45,9 +45,9 @@
     {
       "index": 0,
       "distance_m": 0.0,
-      "elapsed_s": 300.69,
-      "avg_heart_rate": 120,
-      "max_heart_rate": 146,
+      "elapsed_s": 300.53,
+      "avg_heart_rate": 108,
+      "max_heart_rate": 125,
       "avg_speed_mps": null,
       "avg_running_cadence_spm": null,
       "avg_vertical_oscillation_mm": null,
