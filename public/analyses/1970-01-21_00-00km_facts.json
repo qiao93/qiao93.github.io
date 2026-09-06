@@ -1,5 +1,5 @@
 {
-  "label_id": "480012439002317003",
+  "label_id": "480012439002317004",
   "account": "9996632@qq.com",
   "date": "1970-01-21 16:43:03",
   "type": "sport-402",
@@ -14,8 +14,8 @@
     "consistency": "variable"
   },
   "hr_stats": {
-    "mean_bpm": 108,
-    "max_bpm": 125,
+    "mean_bpm": 118.66666666666667,
+    "max_bpm": 165,
     "drift_bpm": 0.0,
     "drift_grade": "excellent"
   },
@@ -45,9 +45,33 @@
     {
       "index": 0,
       "distance_m": 0.0,
-      "elapsed_s": 300.53,
-      "avg_heart_rate": 108,
-      "max_heart_rate": 125,
+      "elapsed_s": 900.82,
+      "avg_heart_rate": 136,
+      "max_heart_rate": 165,
+      "avg_speed_mps": null,
+      "avg_running_cadence_spm": null,
+      "avg_vertical_oscillation_mm": null,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": null
+    },
+    {
+      "index": 1,
+      "distance_m": 0.0,
+      "elapsed_s": 510.59,
+      "avg_heart_rate": 117,
+      "max_heart_rate": 163,
+      "avg_speed_mps": null,
+      "avg_running_cadence_spm": null,
+      "avg_vertical_oscillation_mm": null,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": null
+    },
+    {
+      "index": 2,
+      "distance_m": 0.0,
+      "elapsed_s": 733.21,
+      "avg_heart_rate": 103,
+      "max_heart_rate": 133,
       "avg_speed_mps": null,
       "avg_running_cadence_spm": null,
       "avg_vertical_oscillation_mm": null,
