@@ -1,0 +1,106 @@
+{
+  "label_id": "480440241100980426",
+  "account": "9996632@qq.com",
+  "date": "1970-01-21 17:09:31",
+  "type": "Run",
+  "distance_km": 25.022869999999998,
+  "duration_s": 0.0,
+  "avg_pace_s": 0.0,
+  "location": null,
+  "pace_stats": {
+    "mean_s_per_km": 309.080418532768,
+    "range_s_per_km": 34.104105780518125,
+    "trend": "negative_split",
+    "consistency": "variable"
+  },
+  "hr_stats": {
+    "mean_bpm": 175.8,
+    "max_bpm": 185,
+    "drift_bpm": 0.0,
+    "drift_grade": "excellent"
+  },
+  "bio": {
+    "cadence_spm_first": 190,
+    "cadence_spm_last": 196,
+    "vertical_osc_first_mm": 77.0,
+    "vertical_osc_last_mm": 70.0,
+    "gct_first_ms": null,
+    "gct_last_ms": null,
+    "fatigue_grade": "none"
+  },
+  "body_state": {
+    "hrv_today_ms": 0,
+    "rhr_today_bpm": 50,
+    "hrv_baseline_ms": 69,
+    "load_ratio": 1.0
+  },
+  "pace_vs_goal": {
+    "target_s_per_km": 284,
+    "actual_s_per_km": 309.080418532768,
+    "delta_s_per_km": 25.08041853276802,
+    "matches": false
+  },
+  "recent_sessions": [],
+  "laps": [
+    {
+      "index": 0,
+      "distance_m": 21100.0,
+      "elapsed_s": 6984.2,
+      "avg_heart_rate": 163,
+      "max_heart_rate": 179,
+      "avg_speed_mps": 3.021,
+      "avg_running_cadence_spm": 190,
+      "avg_vertical_oscillation_mm": 77.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 8.1
+    },
+    {
+      "index": 1,
+      "distance_m": 1000.0,
+      "elapsed_s": 308.76,
+      "avg_heart_rate": 175,
+      "max_heart_rate": 179,
+      "avg_speed_mps": 3.239,
+      "avg_running_cadence_spm": 194,
+      "avg_vertical_oscillation_mm": 75.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 7.5
+    },
+    {
+      "index": 2,
+      "distance_m": 1000.0,
+      "elapsed_s": 304.73,
+      "avg_heart_rate": 179,
+      "max_heart_rate": 183,
+      "avg_speed_mps": 3.281,
+      "avg_running_cadence_spm": 194,
+      "avg_vertical_oscillation_mm": 74.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 7.4
+    },
+    {
+      "index": 3,
+      "distance_m": 1000.0,
+      "elapsed_s": 296.89,
+      "avg_heart_rate": 181,
+      "max_heart_rate": 185,
+      "avg_speed_mps": 3.368,
+      "avg_running_cadence_spm": 196,
+      "avg_vertical_oscillation_mm": 72.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 7.0
+    },
+    {
+      "index": 4,
+      "distance_m": 922.87,
+      "elapsed_s": 280.49,
+      "avg_heart_rate": 181,
+      "max_heart_rate": 184,
+      "avg_speed_mps": 3.29,
+      "avg_running_cadence_spm": 196,
+      "avg_vertical_oscillation_mm": 70.0,
+      "avg_ground_contact_time_ms": null,
+      "avg_vertical_ratio_pct": 6.9
+    }
+  ]
+}
