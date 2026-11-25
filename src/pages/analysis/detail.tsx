@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import Layout from '@/components/Layout';
-import { useTheme } from '@/hooks/useTheme';
 
 /**
  * 小红书 / RED 风格的 markdown 自定义渲染器。
@@ -17,17 +14,17 @@ import { useTheme } from '@/hooks/useTheme';
  */
 const components: Components = {
   h1: ({ children }) => (
-    <h1 className="mb-3 mt-2 inline-block border-b-2 border-red-400 pb-2 text-3xl font-extrabold tracking-tight text-gray-900 dark:border-red-500/70 dark:text-gray-50">
+    <h1 className="mt-2 mb-3 inline-block border-b-2 border-red-400 pb-2 text-3xl font-extrabold tracking-tight text-gray-900 dark:border-red-500/70 dark:text-gray-50">
       {children}
     </h1>
   ),
   h2: ({ children }) => (
-    <h2 className="mb-3 mt-10 flex items-center gap-2 border-b border-zinc-200 pb-1 text-2xl font-bold text-zinc-900 dark:border-zinc-700 dark:text-zinc-100">
+    <h2 className="mt-10 mb-3 flex items-center gap-2 border-b border-zinc-200 pb-1 text-2xl font-bold text-zinc-900 dark:border-zinc-700 dark:text-zinc-100">
       {children}
     </h2>
   ),
   h3: ({ children }) => (
-    <h3 className="mb-2 mt-6 text-lg font-bold text-zinc-900 dark:text-zinc-100">
+    <h3 className="mt-6 mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">
       {children}
     </h3>
   ),
@@ -42,9 +39,7 @@ const components: Components = {
     </div>
   ),
   thead: ({ children }) => (
-    <thead className="bg-zinc-50 dark:bg-zinc-800/50">
-      {children}
-    </thead>
+    <thead className="bg-zinc-50 dark:bg-zinc-800/50">{children}</thead>
   ),
   th: ({ children }) => (
     <th className="border-b-2 border-zinc-200 px-3 py-2 text-left font-semibold text-zinc-800 dark:border-zinc-700 dark:text-zinc-200">
@@ -57,13 +52,11 @@ const components: Components = {
     </td>
   ),
   tr: ({ children }) => (
-    <tr className="even:bg-zinc-50/50 dark:even:bg-zinc-800/20 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
+    <tr className="transition-colors even:bg-zinc-50/50 hover:bg-zinc-50 dark:even:bg-zinc-800/20 dark:hover:bg-zinc-800/40">
       {children}
     </tr>
   ),
-  hr: () => (
-    <hr className="my-6 border-zinc-200 dark:border-zinc-700" />
-  ),
+  hr: () => <hr className="my-6 border-zinc-200 dark:border-zinc-700" />,
   code: ({ children }) => (
     <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[0.9em] text-pink-600 dark:bg-zinc-800 dark:text-pink-300">
       {children}
@@ -75,7 +68,7 @@ const components: Components = {
     </strong>
   ),
   em: ({ children }) => (
-    <em className="italic text-zinc-700 dark:text-zinc-300">{children}</em>
+    <em className="text-zinc-700 italic dark:text-zinc-300">{children}</em>
   ),
   ol: ({ children }) => (
     <ol className="my-4 list-decimal space-y-2 pl-6 text-zinc-700 dark:text-zinc-300">
@@ -102,16 +95,10 @@ const components: Components = {
 };
 
 const AnalysisDetailPage = () => {
-  const { theme } = useTheme();
   const { slug } = useParams<{ slug: string }>();
   const [md, setMd] = useState<string | null>(null);
   const [narrativeMd, setNarrativeMd] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const html = document.documentElement;
-    html.setAttribute('data-theme', theme);
-  }, [theme]);
 
   useEffect(() => {
     if (!slug) return;
@@ -144,66 +131,56 @@ const AnalysisDetailPage = () => {
 
   if (!slug) {
     return (
-      <Layout>
-        <Helmet>
-          <html lang="zh" data-theme={theme} />
-        </Helmet>
-        <div className="mx-auto w-full max-w-3xl px-4 py-8">
-          <p className="text-sm text-gray-500">missing slug in URL</p>
-        </div>
-      </Layout>
+      <div className="mx-auto w-full max-w-3xl px-4 py-8">
+        <p className="text-sm text-gray-500">missing slug in URL</p>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <Helmet>
-        <html lang="zh" data-theme={theme} />
-      </Helmet>
-      <div className="mx-auto w-full max-w-3xl px-4 py-8">
-        <p className="mb-6 text-sm">
-          <Link
-            to="/analysis"
-            className="inline-flex items-center gap-1 text-blue-600 underline hover:text-blue-800 dark:text-blue-400"
-          >
-            ← 返回报告列表
-          </Link>
-        </p>
-
-        {error && (
-          <div className="rounded border border-red-300 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200">
-            ⚠️ 加载报告失败：{error}
-            <br />
-            <span className="text-xs">
-              slug: <code>{slug}</code>
-            </span>
-          </div>
-        )}
-
-        {md === null && !error && (
-          <div className="text-sm text-gray-500">加载中…</div>
-        )}
-
-        {md && (
-          <article className="text-base leading-relaxed text-zinc-800 dark:text-zinc-200">
-            {narrativeMd && (
-              <section className="mb-10 rounded-lg border border-amber-300 bg-amber-50/40 p-5 dark:border-amber-700/50 dark:bg-amber-950/20">
-                <header className="mb-3 flex items-center gap-2 text-sm font-semibold text-amber-700 dark:text-amber-300">
-                  <span>🤖</span>
-                  <span>AI 解读 (Layer 3)</span>
-                </header>
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-                  {narrativeMd}
-                </ReactMarkdown>
-              </section>
-            )}
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-              {md}
-            </ReactMarkdown>
-          </article>
-        )}
-      </div>
-    </Layout>
+    <div className="mx-auto w-full max-w-3xl px-4 py-8">
+      <p className="mb-6 text-sm">
+        <Link
+          to="/analysis"
+          className="inline-flex items-center gap-1 text-blue-600 underline hover:text-blue-800 dark:text-blue-400"
+        >
+          ← 返回报告列表
+        </Link>
+      </p>
+      {error && (
+        <div className="rounded border border-red-300 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200">
+          ⚠️ 加载报告失败：{error}
+          <br />
+          <span className="text-xs">
+            slug: <code>{slug}</code>
+          </span>
+        </div>
+      )}
+      {md === null && !error && (
+        <div className="text-sm text-gray-500">加载中…</div>
+      )}
+      {md && (
+        <article className="text-base leading-relaxed text-zinc-800 dark:text-zinc-200">
+          {narrativeMd && (
+            <section className="mb-10 rounded-lg border border-amber-300 bg-amber-50/40 p-5 dark:border-amber-700/50 dark:bg-amber-950/20">
+              <header className="mb-3 flex items-center gap-2 text-sm font-semibold text-amber-700 dark:text-amber-300">
+                <span>🤖</span>
+                <span>AI 解读 (Layer 3)</span>
+              </header>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={components}
+              >
+                {narrativeMd}
+              </ReactMarkdown>
+            </section>
+          )}
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+            {md}
+          </ReactMarkdown>
+        </article>
+      )}
+    </div>
   );
 };
 

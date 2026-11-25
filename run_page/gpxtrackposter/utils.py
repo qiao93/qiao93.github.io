@@ -7,8 +7,8 @@
 
 import locale
 import math
+import os
 from datetime import datetime
-from typing import List, Optional, Tuple
 
 import colour
 import pytz
@@ -42,8 +42,8 @@ def lat2y(lat_deg: float) -> float:
 
 
 def project(
-    bbox: s2.LatLngRect, size: XY, offset: XY, latlnglines: List[List[s2.LatLng]]
-) -> List[List[Tuple[float, float]]]:
+    bbox: s2.LatLngRect, size: XY, offset: XY, latlnglines: list[list[s2.LatLng]]
+) -> list[list[tuple[float, float]]]:
     min_x = lng2x(bbox.lng_lo().degrees)
     d_x = lng2x(bbox.lng_hi().degrees) - min_x
     while d_x >= 2:
@@ -79,7 +79,7 @@ def project(
 
 def compute_grid(
     count: int, dimensions: XY
-) -> Tuple[Optional[float], Optional[Tuple[int, int]]]:
+) -> tuple[float | None, tuple[int, int] | None]:
     # this is somehow suboptimal O(count^2). I guess it's possible in O(count)
     min_waste = -1.0
     best_size = None
@@ -119,9 +119,29 @@ def format_float(f):
     return locale.format_string("%.1f", f)
 
 
+def default_timezone() -> str:
+    """Timezone used when a track has no GPS point to look one up from.
+
+    Configure with RUNNING_PAGE_TIMEZONE (e.g. "America/Los_Angeles"), falling
+    back to TZ and finally to Asia/Shanghai for backwards compatibility.
+    """
+    for name in (os.getenv("RUNNING_PAGE_TIMEZONE"), os.getenv("TZ")):
+        if not name:
+            continue
+        try:
+            pytz.timezone(name)
+        except pytz.UnknownTimeZoneError:
+            print(f"unknown timezone: {name}, ignoring")
+            continue
+        return name
+    return "Asia/Shanghai"
+
+
 def parse_datetime_to_local(start_time, end_time, point):
     if not point:
-        timezone = "Asia/Shanghai"
+        # No GPS point (e.g. treadmill run): use the configured default zone
+        # instead of assuming Asia/Shanghai.
+        timezone = default_timezone()
     else:
         # just parse the start time, because start/end maybe different
         offset = start_time.utcoffset()
@@ -130,11 +150,11 @@ def parse_datetime_to_local(start_time, end_time, point):
         lat, lng = point
         try:
             timezone = get_tz(lng=lng, lat=lat)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # just a little trick when tzfpy support windows will delete this
             print(f"tzfpy error: {e} fallback to timezonefinder")
             lat, lng = point
-            timezone = tf.timezone_at(lng=lng, lat=lat)
+            timezone = tf.timezone_at(lng=lng, lat=lat) or default_timezone()
     tc_offset = datetime.now(pytz.timezone(timezone)).utcoffset()
     return start_time + tc_offset, end_time + tc_offset
 

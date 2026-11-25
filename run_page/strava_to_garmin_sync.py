@@ -5,6 +5,7 @@ from datetime import datetime
 from garmin_sync import Garmin
 from strava_sync import run_strava_sync
 from stravaweblib import DataFormat, WebClient
+
 from utils import make_strava_client
 
 
@@ -33,7 +34,7 @@ async def upload_to_activities(
         try:
             data = strava_web_client.get_activity_data(i.id, fmt=format)
             files_list.append(data)
-        except Exception as ex:
+        except Exception as ex:  # noqa: BLE001
             print("get strava data error: ", ex)
     await garmin_client.upload_activities_original_from_strava(
         files_list, use_fake_garmin_device
@@ -97,7 +98,7 @@ if __name__ == "__main__":
             )
         )
         loop.run_until_complete(future)
-    except Exception as err:
+    except Exception as err:  # noqa: BLE001
         print(err)
 
     # Run the strava sync

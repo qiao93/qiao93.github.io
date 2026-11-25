@@ -6,9 +6,9 @@ import time
 
 import aiofiles
 import httpx
+from config import FOLDER_DICT, JSON_FILE, SQL_FILE
 from sqlalchemy import create_engine, text
 
-from config import JSON_FILE, SQL_FILE, FOLDER_DICT
 from utils import make_activities_file
 
 # `config.SQL_FILE` = "{repo_root}/run_page/data.db" (same formula id_map uses)
@@ -60,9 +60,7 @@ class Coros:
             try:
                 response = await client.post(url, json=data, headers=headers)
             except httpx.HTTPError as exc:
-                raise RuntimeError(
-                    f"Coros login request failed: {exc}"
-                ) from exc
+                raise RuntimeError(f"Coros login request failed: {exc}") from exc
 
             if response.status_code != 200:
                 raise RuntimeError(
@@ -85,9 +83,7 @@ class Coros:
                         "Coros login requires captcha verification; "
                         "try again from a web browser first to clear it."
                     )
-                raise RuntimeError(
-                    f"Coros login failed (no access token): {resp_json}"
-                )
+                raise RuntimeError(f"Coros login failed (no access token): {resp_json}")
             self.headers = {
                 "accesstoken": access_token,
                 "cookie": f"CPL-coros-region=2; CPL-coros-token={access_token}",
@@ -158,7 +154,7 @@ class Coros:
             print(
                 f"Failed to download {file_url} with status code {status_code}: {exc}"
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             print(f"Error occurred while downloading {file_url}: {exc}")
         if file_path and os.path.exists(file_path):
             print(f"Delete the corrupted fit file: {fname}")

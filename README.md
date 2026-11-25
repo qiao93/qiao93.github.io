@@ -108,7 +108,7 @@ English | [简体中文](https://github.com/yihong0618/running_page/blob/master/
 | [Ryan](https://github.com/85Ryan)                    | <https://85ryan.github.io/gooorun/>            | Strava      |
 | [PPZ](https://github.com/8824PPZ)                    | <https://run.dudubbbbbbbbb.top/>               | Strava      |
 | [Yer1k](https://github.com/Yer1k)                    | <https://running.yer1k.com/>                   | Strava      |
-| [AlienVision](https://github.com/weaming)            | <https://run.drink.cafe/>                      | Strava      |
+| [AlienVision](https://github.com/weaming)            | <https://run.bitsflow.org/>                      | Strava      |
 | [闻笑忘](https://wenxiaowan.com)                     | <https://wenxiaowan.com>                       | 苹果健身    |
 | [Vensent](https://github.com/Vensent)                | <https://vensent.github.io/workouts_page/>     | Garmin      |
 | [Zeonsing](https://github.com/NoonieBao)             | <https://run.jogzeal.com/>                     | Coros       |
@@ -185,7 +185,7 @@ Clone or fork the repo.
 git clone https://github.com/yihong0618/running_page.git --depth=1
 ```
 
-## Installation and testing (node >= 20 python >= 3.11)
+## Installation and testing (node >= 20 python >= 3.12)
 
 ```bash
 pip3 install -r requirements.txt
@@ -194,6 +194,58 @@ pnpm develop
 ```
 
 Open your browser and visit <http://localhost:5173/>
+
+## Strava Web Sync
+
+> For when your Strava API application is `inactive` (all OAuth2 requests return 403), you can sync activities through Strava's web endpoints instead.
+
+```bash
+# Sync locally (last 7 days by default)
+python run_page/strava_web_sync.py <JWT> --days 7
+
+# Runs only
+python run_page/strava_web_sync.py <JWT> --days 7 --only-run
+```
+
+**Getting the JWT:**
+
+1. Log in to [strava.com](https://www.strava.com) in your browser
+2. DevTools (F12) → Application → Cookies → `https://www.strava.com`
+3. Copy the value of `strava_remember_token` (a long `eyJ...` JWT)
+
+**CI setup:**
+
+- Set `RUN_TYPE` to `strava_web` in the workflow
+- Add GitHub Secret `STRAVA_JWT` (the JWT value)
+- Optional Variable `STRAVA_WEB_DAYS` (default: 7)
+
+> ⚠️ The JWT expires in ~30 days. Refresh `STRAVA_JWT` by re-copying it from the browser when it does.
+
+## Health Auto Export
+
+Import running workouts from Apple Health using a [Health Auto Export Workouts JSON v2](https://help.healthyapps.dev/en/health-auto-export/export-format/workouts/) file or a directory of exports.
+
+1. In Health Auto Export, select **Workouts**, **JSON**, and **Version 2**. Include distance and enable **Include Route Data** for outdoor maps. Disable localized units. Treadmill runs can be imported without GPS.
+2. After installing the Python dependencies, run the importer from the repository root.
+
+   ```bash
+   python run_page/health_auto_export_sync.py /path/to/workouts.json
+   ```
+
+The importer updates the activity database and regenerates `src/static/activities.json`. It uses the export's workout duration for moving time and the difference between the start and end timestamps for elapsed time. Repeated exports of the same workout update its existing record. The importer checks existing runs by start time, distance, and duration and keeps the existing record when it finds a match. Use the optional `--since 2026-01-01T00:00:00+08:00` to limit the import window. Use `--db` and `--output` to try the import without touching existing data.
+
+Set the route privacy ranges before importing. The importer applies them before storing GPS routes in SQLite and saves a digest of each workout ID. Reimport the original export to restore points after reducing a privacy range.
+
+Keep raw exports outside the repository. Check the generated JSON and map before publishing, especially where routes start or end. For automation, run the same command against a local directory after your export files have arrived.
+
+### Daily Google Drive sync with GitHub Actions
+
+1. In Health Auto Export, create a [Google Drive automation](https://help.healthyapps.dev/en/health-auto-export/automations/google-drive/) for Workouts in JSON Version 2. Choose a dedicated folder and manually upload a sample.
+2. Enable the Drive API in Google Cloud, create a dedicated service account and JSON key, and share the export folder with that account as Viewer.
+3. In your repository's Settings → Secrets and variables → Actions, store the key JSON as the secret `HAE_DRIVE_SERVICE_ACCOUNT_JSON`. Store the export folder ID (after `/folders/` in its URL) as `HAE_DRIVE_FOLDER_ID`, either as a secret or a variable.
+4. Manually run Run Data Sync with **Verify Google Drive import without publishing** enabled. Once it passes, set the repository variable `RUN_TYPE` to `health_auto_export` to use the existing daily schedule.
+
+The workflow reads JSON files from the dedicated folder and cleans up the downloaded exports on exit. Preview mode uses a temporary database and skips pushing data and publishing the site.
 
 ## TUI (Terminal UI)
 
@@ -257,17 +309,44 @@ Open your browser and visit localhost:80
 
 ### Modifying Mapbox token
 
-> If you use English please change `IS_CHINESE = false` in `src/utils/const.ts` <br>
-> Suggested changes to your own [Mapbox token](https://www.mapbox.com/)
+> **Security Notice**: The Mapbox token has been migrated from `src/themes/classic/utils/const.ts` to `config.yml` for better security management.
+>
+> **For GitHub Actions / Automated Deployment**:
+> 1. Go to your repository's **Settings → Secrets and variables → Actions**
+> 2. Create a new secret named `MAPBOX_TOKEN` with your Mapbox token value
+> 3. The build process automatically injects this token during GitHub Actions workflow execution
+> 4. You should NOT commit your token to the repository
+>
+> **Priority Order**:
+> - GitHub Actions Secret (`MAPBOX_TOKEN` env var) takes priority
+> - Falls back to `config.yml` mapbox_token if secret is not set
+> - Defaults to empty string if neither is available
 
-```typescript
-const MAPBOX_TOKEN =
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+Set your [Mapbox token](https://www.mapbox.com/) in one of these ways:
+
+**Option 1: GitHub Actions Secret (Recommended for GitHub Pages)**
+```bash
+# Add MAPBOX_TOKEN to your repository secrets
+# No changes needed to config.yml - it will use the secret automatically
 ```
 
-## Change Default Map Tile Style
+**Option 2: Local Development with config.yml**
+```yaml
+# config.yml
+mapbox_token: 'pk.eyJ1...your-token-here'
+```
 
-> In addition to using the default map tile style, you can customize the map display by modifying the following configurations in `src/utils/const.ts`:
+**Option 3: Environment Variable (Local Development)**
+```bash
+export VITE_MAPBOX_TOKEN='pk.eyJ1...your-token-here'
+pnpm develop
+```
+
+> **Important**: Do not use the project maintainer's token - check this [issue](https://github.com/yihong0618/running_page/issues/643) and [issue #1055](https://github.com/yihong0618/running_page/issues/1055) for security and rate limit concerns.
+
+## Change Default Map Tile Style (Classic Theme)
+
+> If using the **classic** theme, you can customize the map tile style in the classic theme's configuration. The dashboard theme uses Mapbox by default (configured via `config.yml`).
 
 ```typescript
 const MAP_TILE_VENDOR = 'mapcn'; // Default (free!)
@@ -311,7 +390,7 @@ const MAP_TILE_STYLE = 'dark-v10'; // style for chosen vendor
 const MAP_TILE_ACCESS_TOKEN = 'your_access_token_here';
 ```
 
-Each `MAP_TILE_VENDOR` provides multiple `MAP_TILE_STYLE` options. Ensure the style matches your selected vendor. For available `MAP_TILE_STYLE` names, refer to the definitions in `src/utils/const.ts`.
+Each `MAP_TILE_VENDOR` provides multiple `MAP_TILE_STYLE` options. Ensure the style matches your selected vendor. For available `MAP_TILE_STYLE` names, refer to the classic theme's map configuration.
 
 When using **"mapbox"**, **"maptiler"** or **"stadiamaps"**, you must configure an `ACCESS_TOKEN`. The default token may cause quota limit issues if not replaced.
 
@@ -319,48 +398,42 @@ When using **"mapbox"**, **"maptiler"** or **"stadiamaps"**, you must configure 
 - **MapTiler**: Register at [https://cloud.maptiler.com/auth/widget](https://cloud.maptiler.com/auth/widget) (Free tier available)
 - **Stadia Maps**: Sign up at [https://client.stadiamaps.com/signup/](https://client.stadiamaps.com/signup/) (Free tier available)
 
-## Custom your page
+## Theme System (3.0)
 
-- Find `src/static/site-metadata.ts` in the repository directory, find the following content, and change it to what you want.
+Running Page 3.0 introduces a pluggable theme architecture. Built-in themes include **Dashboard** (modern single-page layout) and **Classic** (original multi-page layout).
 
-```typescript
-siteMetadata: {
-  siteTitle: 'Running Page', #website title
-  siteUrl: 'https://yihong.run', #website url
-  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtc69JxHNcmN1ETpMUX4dozAgAN6iPjWalQ&usqp=CAU', #logo img
-  description: 'Personal site and blog',
-  navLinks: [
-    {
-      name: 'Blog', #navigation name
-      url: 'https://yihong.run/running', #navigation url
-    },
-    {
-      name: 'About',
-      url: 'https://github.com/yihong0618/running_page/blob/master/README-CN.md',
-    },
-  ],
-},
+### Switching Themes
+
+Edit `config.yml` and rebuild:
+
+```yaml
+# dashboard | classic | custom
+theme_preset: classic
 ```
 
-- Modifying styling in `src/utils/const.ts`
+> For detailed architecture, theme descriptions, custom theme creation, and the shared core layer API, see **[docs/theme-system.md](docs/theme-system.md)**.
 
-```typescript
-// styling: set to `false` if you want to disable dash-line route
-const USE_DASH_LINE = true;
-// styling: route line opacity: [0, 1]
-const LINE_OPACITY = 0.4;
-// styling: set to `true` if you want to display only the routes without showing the map
-// Note: This config only affects the page display; please refer to "privacy protection" below for data protection
-// update for now 2024/11/17 the privacy mode is true
-const PRIVACY_MODE = true;
-// update for now 2024/11/17 the lights on default is false
-// styling: set to `false` if you want to make light off as default, only effect when `PRIVACY_MODE` = false
-const LIGHTS_ON = false;
-// set to `true` if you want to show the 'Elevation Gain' column
-const SHOW_ELEVATION_GAIN = true;
+## Custom your page (3.0)
+
+All personalization is done through `config.yml` at the project root. Edit this file directly — no code changes needed.
+
+```yaml
+# config.yml
+mapbox_token: 'your-token-here'   # https://account.mapbox.com
+avatar: 'https://...'              # Profile avatar URL
+locale: zh                         # zh | en
+theme: dark                        # system | light | dark
+theme_preset: dashboard            # dashboard | classic | custom
+
+goals:
+  Run:
+    yearly: 2000                   # Annual distance target (km)
+    monthly: 150                   # Monthly distance target (km)
+    weekly: 35                     # Weekly distance target (km)
+    unit: distance                 # distance (km) | time (minutes)
 ```
 
-- To use Google Analytics, you need to modify the configuration in the `src/utils/analytics.ts` file.
+- To use Google Analytics, you need to modify the configuration in the `src/utils/analytics.ts` file (if present).
 
 ```typescript
 const USE_GOOGLE_ANALYTICS = false;
@@ -384,6 +457,22 @@ IGNORE_BEFORE_SAVING =
 ```
 
 You can using `Google map` [Interactive Polyline Encoder Utility](https://developers.google.com/maps/documentation/utilities/polylineutility), to making your `IGNORE_POLYLINE`.
+
+### Indoor routes
+
+Activities without GPS keep their original route, subtype and location data.
+When selected on the dashboard or classic map, they display the most recent
+earlier activity with a usable GPS route and a notice identifying that route.
+If no earlier mapped activity exists, no substitute route is shown. This fallback
+is only for display; it does not change activity distances, exports or the database.
+Configured privacy filters still apply to exported routes.
+
+For SVG posters generated from the database, the grid layout omits activities
+whose stored route is empty or NULL. Other layouts retain their dates and distances
+in activity totals; they do not borrow the frontend's substitute route.
+
+Previously generated routes already stored in `run_page/data.db` cannot reliably be
+distinguished from source routes. Reimport the original activity data to replace them.
 
 ## Download your running data
 
@@ -445,7 +534,7 @@ python run_page/fit_sync.py
 - If you only want `tcx` files add args --tcx
 - If you only want `fit` files add args --fit
 - If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-  **The Python version must be >=3.8**
+  **The Python version must be >=3.12**
 
 #### Get Garmin Secret
 
@@ -490,7 +579,7 @@ python run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string) --only-run
 - If you only want `tcx` files add args --tcx
 - If you only want `fit` files add args --fit
 - If you are using Garmin as a data source, it is recommended that you pull the code to your local environment to run and obtain the Garmin secret.
-  **The Python version must be >=3.10**
+  **The Python version must be >=3.12**
 
 #### Get Garmin CN Secret
 
@@ -530,7 +619,7 @@ python run_page/garmin_sync.py xxxxxxxxxxxxxx(secret_string)  --is-cn --only-run
 <br>
 
 - If you only want to sync `type running` add args --only-run
-  **The Python version must be >=3.10**
+  **The Python version must be >=3.12**
 
 #### Get Garmin CN Secret
 
@@ -635,6 +724,9 @@ python run_page/nike_sync.py eyJhbGciThiMTItNGIw******
 <summary> Get your <code>Strava</code> data </summary>
 
 <br>
+
+> [!NOTE]
+> Strava updated its Developer Program in June 2026. If you use Strava as the data source, or upload activities to Strava before syncing, check your app tier in the [Strava API settings dashboard](https://www.strava.com/settings/api). Standard Tier developers need a Strava subscription to access the API; existing Standard Tier developers are affected from June 30, 2026. See [Strava's announcement](https://communityhub.strava.com/insider-journal-9/an-update-to-our-developer-program-13428) for details.
 
 1. Sign in/Sign up [Strava](https://www.strava.com/) account
 2. Open after successful Signin [Strava Developers](http://developers.strava.com) -> [Create & Manage Your App](https://strava.com/settings/api)
@@ -1162,7 +1254,7 @@ For more display effects, see:
 
 5. Scroll down, click `Environment variables (advanced)`, then add a variable like the below:
 
-   > Variable name = `PYTHON_VERSION`, Value = `3.11`
+   > Variable name = `PYTHON_VERSION`, Value = `3.12`
 
 6. Click `Save and Deploy`
 
@@ -1188,7 +1280,7 @@ For more display effects, see:
 5. If you want to deploy your running_page to xxx.github.io instead of xxx.github.io/running_page or redirect your GitHub Pages to a custom domain, you need to do three things:
    - Rename your forked running_page repository to `xxx.github.io`, where xxx is your GitHub username
    - Modify the Build module in gh-pages.yml, remove `${{ github.event.repository.name }}` and change to `run: PATH_PREFIX=/ pnpm build`
-   - In `src/static/site-metadata.ts`, set siteUrl: '' or your custom domain URL
+   - In `config.yml`, set your custom domain URL or leave empty
 
 </details>
 

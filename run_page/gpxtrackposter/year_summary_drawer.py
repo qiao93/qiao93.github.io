@@ -28,7 +28,8 @@ class YearSummaryDrawer(TracksDrawer):
 
     def fetch_args(self, args):
         if args.type == "year_summary":
-            self.year = args.summary_year or datetime.datetime.now().year
+            now_year = datetime.datetime.now().year
+            self.year = args.summary_year or now_year
 
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
         """Draw the year summary poster"""
@@ -265,8 +266,7 @@ class YearSummaryDrawer(TracksDrawer):
         for t in tracks:
             dist_km = t.length / 1000
             # Track longest run
-            if t.length > longest_run_m:
-                longest_run_m = t.length
+            longest_run_m = max(longest_run_m, t.length)
 
             # Count race distances
             if dist_km >= 42.0:
@@ -283,11 +283,10 @@ class YearSummaryDrawer(TracksDrawer):
                     total_time_s += moving_time.total_seconds()
                 else:
                     total_time_s += float(moving_time)
-            elif t.end_time and t.start_time:
-                if isinstance(t.end_time, datetime.datetime) and isinstance(
-                    t.start_time, datetime.datetime
-                ):
-                    total_time_s += (t.end_time - t.start_time).total_seconds()
+            elif isinstance(t.end_time, datetime.datetime) and isinstance(
+                t.start_time, datetime.datetime
+            ):
+                total_time_s += (t.end_time - t.start_time).total_seconds()
 
         stats["total_distance"] = self.poster.m2u(total_distance_m)
         stats["total_time"] = total_time_s
@@ -311,7 +310,7 @@ class YearSummaryDrawer(TracksDrawer):
             return 0
 
         # Get unique dates
-        dates = sorted(set(t.start_time_local.date() for t in tracks))
+        dates = sorted({t.start_time_local.date() for t in tracks})
         if not dates:
             return 0
 

@@ -2,14 +2,15 @@
 # https://github.com/timschneeb/KomootGPX.git
 # great thanks
 
+import argparse
+import base64
 import os
 import re
 import sys
-import argparse
-import base64
-import requests
 from datetime import datetime, timedelta
+
 import gpxpy.gpx
+import requests
 from config import GPX_FOLDER
 
 
@@ -52,7 +53,7 @@ class KomootApi:
         if r.status_code != 200:
             print("Error " + str(r.status_code) + ": " + str(r.json()))
             if critical:
-                exit(1)
+                sys.exit(1)
         return r
 
     def login(self, email, password):
@@ -202,11 +203,13 @@ class GpxCompiler:
                         name = ref["name"]
                     if "mid_point" in ref:
                         point = Point(ref["mid_point"])
-                    if "front_image" in ref["_embedded"]:
-                        if "src" in ref["_embedded"]["front_image"]:
-                            image_url = ref["_embedded"]["front_image"]["src"].split(
-                                "?", 1
-                            )[0]
+                    if (
+                        "front_image" in ref["_embedded"]
+                        and "src" in ref["_embedded"]["front_image"]
+                    ):
+                        image_url = ref["_embedded"]["front_image"]["src"].split(
+                            "?", 1
+                        )[0]
 
                     tips = self.api.fetch_highlight_tips(str(ref["id"]))
                     if "_embedded" in tips and "items" in tips["_embedded"]:
@@ -229,8 +232,8 @@ class GpxCompiler:
         if self.tour["type"] == "tour_recorded":
             gpx.name = gpx.name + " (Completed)"
         gpx.description = (
-            f"Distance: {str(int(self.tour['distance']) / 1000.0)}km, "
-            f"Estimated duration: {str(round(self.tour['duration'] / 3600.0, 2))}h, "
+            f"Distance: {int(self.tour['distance']) / 1000.0!s}km, "
+            f"Estimated duration: {round(self.tour['duration'] / 3600.0, 2)!s}h, "
             f"Elevation up: {self.tour['elevation_up']}m, "
             f"Elevation down: {self.tour['elevation_down']}m"
         )
@@ -360,10 +363,9 @@ def is_tour_in_date_range(tour, start_date, end_date):
         return False
 
     # If both dates are provided, ensure tour is within range
-    if start_date and end_date and (tour_date < start_date or tour_date > end_date):
-        return False
-
-    return True
+    return not (
+        start_date and end_date and (tour_date < start_date or tour_date > end_date)
+    )
 
 
 def date_filter(tours, start_date, end_date):
@@ -399,7 +401,7 @@ def make_gpx(tour_id, api, no_poi, tour_base):
     fullname = f"{tour_id}.gpx"
     path = f"{GPX_FOLDER}/{fullname}"
 
-    if fullname in output_dir_contents:
+    if fullname in output_dir_contents:  # noqa: FURB132
         output_dir_contents.remove(fullname)
 
     if os.path.exists(path):
@@ -410,9 +412,8 @@ def make_gpx(tour_id, api, no_poi, tour_base):
         tour = api.fetch_tour(str(tour_id))
     gpx = GpxCompiler(tour, api, no_poi)
 
-    f = open(path, "w", encoding="utf-8")
-    f.write(gpx.generate())
-    f.close()
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(gpx.generate())
 
     print(f"GPX file written to '{path}'")
 
@@ -458,7 +459,7 @@ def main(args):
     gpxpat = re.compile(r"\.gpx$")
     for f in os.listdir(GPX_FOLDER):
         if not os.path.isfile(f) or not gpxpat.match(f):
-            next
+            next  # noqa: B018
         output_dir_contents.add(f)
 
     api = KomootApi()

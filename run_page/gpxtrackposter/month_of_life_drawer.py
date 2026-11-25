@@ -1,5 +1,5 @@
-import math
 import datetime
+import math
 
 import svgwrite
 
@@ -41,7 +41,7 @@ class MonthOfLifeDrawer(TracksDrawer):
                 self.birth_month = int(parts[1])
                 if not (1 <= self.birth_month <= 12):
                     raise ValueError
-            except Exception:
+            except Exception:  # noqa: BLE001
                 raise PosterError("Invalid birth date format, must be YYYY-MM")
 
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
